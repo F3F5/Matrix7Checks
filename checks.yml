@@ -1,0 +1,798 @@
+#### Matrix Config - checks.yml ####################################################
+#
+#     Hi, welcome to use Matrix anti-cheat, this is checks.yml, used to define
+#  the settings and behaviors of each checks. You can set the parameters of
+#  each check here, and you can also define how to perform actions after each
+#  check detects a player cheating.
+#
+#  CAUTION! If you encounter any false positives and bypasses, you should first
+#  consider reporting this BUG. Adjusting the configuration file will not really
+#  fix the false positives and bypasses!
+#
+#  - What is "VL"?
+#        "VL" is the abbreviation of "Violation Level". When the player is marked
+#    as cheating by anti-cheating, the anti-cheating will increase the player's
+#    violation level. When the player's VL reaches the value in the "commands"
+#    node below, the corresponding command will be executed.
+#
+#  - If you encounter any problems, please go to our official Discord
+#  group for help: https://discord.gg/pEvY55J
+#
+#  Anyway, thanks for using Matrix anticheat! �?
+#
+#####################################################################################
+
+## KillAura
+# Prevents the player from using the KillAura/AimBot hack
+killaura:
+  enable: true
+
+  # Modules used in the KillAura checks
+  modules:
+    # Check if the player exhibits flaw in the combat
+    flaw:
+      type_a:
+        enable: true
+        vl: 3
+      type_b:
+        enable: true
+        vl: 10
+      type_c:
+        enable: true
+        vl: 10
+      type_d:
+        enable: true
+        vl: 10
+      type_e:
+        enable: true
+        vl: 5
+    # Check if the player has correct rotation when attacking
+    rotation:
+      type_a:
+        enable: true
+        vl: 2
+      type_b:
+        enable: true
+        vl: 2
+    # Check if the player shows aiming characteristics similar to aimbot
+    aimbot:
+      vl_weight: 7
+      cancel_hit: true
+
+      check_aimbot_sync: true
+      check_aimbot_shake: true
+      check_aimbot_snap: true
+      check_aimbot_sensitivity: true
+      check_aimbot_acceleration: true
+      check_aimbot_bad_rotation: true
+      check_aimbot_mouse_speed: true
+
+    # NPC check: Generates a fake player directly behind players.
+    # This detects if the player can swing ~180° behind them instantly.
+    # Only the target player can see the NPC! It is invisible to everyone else.
+    npc:
+      enable: true
+      vl_weight: 5
+
+      # Whether to process the NPC asynchronously.
+      # This decreases server load, but may cause a movement delay if players turn quickly.
+      async: true
+
+      # Whether NPCs use real entity IDs instead of randomly generating them.
+      # Some hacked clients can detect and ignore entities with invalid IDs.
+      real_entity_id: true
+
+      # Whether to disable automatic NPC spawning.
+      # Disable this if you want Matrix to handle NPC spawning.
+      only_command_trigger: true
+
+      # Whether the NPC will be visible.
+      # Disabling will make fewer players confused, but the check less reliable.
+      # Most client's KillAura implementations do not attack invisible entities.
+      visible: true
+
+      # Whether to use a random name instead of an online player's name.
+      # Enabling may cause issues if you have an unconventional teams setup.
+      force_random_name: false
+
+      # NPC existence time setting (ticks)
+      check_ticks:
+        base: 100 # The minimum existence time.
+        attack_add: 20 # Time added when attacked.
+        hit_bot_add: 50  # Time added when hit.
+
+      # NPC motion settings
+      movement:
+        # The minimum distance from the player.
+        distance_base: 4.2
+
+        # RNG applied to the base distance.
+        distance_random_size: 0.75
+
+        # Distance from the player required to attack.
+        distance_attack_base: 4.0
+
+        move_up_after_attack: true
+
+    # Critical check: Prevents players from making abnormal critical hits.
+    critical:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 5
+
+    # Strafe check: Analyze player strafing while in combat.
+    strafe:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 3
+
+      # Whether illegal movements will be cancelled.
+      cancel_move: true
+
+    # Combine check: Additional violations if multiple checks are triggered at once.
+    #
+    # Structure:
+    # name: The name of the combination.
+    #   time: How long to check for conditions.
+    #   condition: List of all components to combine. (hack component)
+    #   action: Amount of violations that will be added when detected.
+    combine:
+      aimbot_with_reach:
+        time: 5000
+        condition:
+          - 'ka.abt.magic'
+          - 'hb.reach'
+        action: 5 # +5 VL
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 5
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    8: 'matrix npc %player% 125'
+    14: 'coc %player% if -lp-<30 do matrix notify %gp_c_me%%gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_sm%(14VL) -h %gp_c_hm% KillAura -c %gp_r_cc%'
+    20: 'matrix notify %gp_c_me%%gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_md%(20VL) -h %gp_c_hm% KillAura -c %gp_r_cc%'
+    35: 'matrix notify %gp_c_me%%gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_hg%(35VL) -h %gp_c_hm% KillAura -c %gp_r_cc%'
+    42: 'coc %player% if -lp-<25 do %gp_r_ki% %player% %gp_o_pr%%gp_h_ka%%gp_o_su%%gp_n_fp%'
+    54: '%gp_r_ki% %player% %gp_o_pr%%gp_h_ka%%gp_o_su%%gp_n_fp%'
+
+## HitBox
+# Prevents players from using HitBox, Angle, and Reach hacks.
+hitbox:
+  enable: true
+
+  # Maximum reach distance.
+  # The max client reach distance is 3.0, but lag and other factors may influence this value.
+  # Because of this, it shouldn't be set to 3.0 or lower.
+  max_reach: 3.075
+
+  # Amount of moves that will be traced back to the player.
+  # Setting this higher may reduce false positives but weaken detection.
+  trace_back_length: 12
+
+  # How the hack will be canceled. (none, silent, cancel)
+  # none: Doesn't do anything to the player. (Not recommended)
+  # silent: Damage the opposing player, but set the damage to 0.
+  # cancel: Cancel the hit event entirely.
+  cancel_way: cancel
+
+  # Amount of violations needed to cancel illegal hits. (-1 = don't cancel)
+  cancel_vl: 6
+
+  # Violation weights
+  vl_weights:
+    miss_player_hitbox: 2 # Player misses a hitbox that should've been hit.
+    reach_target_standing: 10 # Player hits an idle hitbox.
+    reach_target_moving: 3 # Player hits a moving hitbox.
+
+  # Dynamic violations change the VL weights based on the amount of reach.
+  # Players could receive X vl when using 3.5 reach, and X + 10 vl when using 5.0.
+  # If enabled, "reach_target_standing" and "reach_target_moving" will no longer be used.
+  dynamic_vl:
+    enable: true
+
+    # Multiplier for dynamic VL equation.
+    # vl = (current_reach - max_reach) * expander
+    expander: 10
+
+    # Minimum amount of violations that will be added.
+    min_vl: 3
+
+    # Maximum amount of violations that will be added.
+    max_vl: 19
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 5
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    6: 'coc %player% if -lp-<28 do matrix npc %player% 120'
+    10: 'matrix notify %gp_c_me%%gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_md%(10VL) -h %gp_c_hm% HitBox -c %gp_r_cc%'
+    13: 'coc %player% if -lp-<35 do matrix npc %player% 125'
+    15: 'matrix notify %gp_c_me%%gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_hg%(15VL) -h %gp_c_hm% HitBox -c %gp_r_cc%'
+    22: 'coc %player% if -lp-<30 do %gp_r_ki% %player% %gp_o_pr%%gp_h_hb%%gp_o_su%%gp_n_fp%'
+    28: '%gp_r_ki% %player% %gp_o_pr%%gp_h_hb%%gp_o_su%%gp_n_fp%'
+
+# Click check
+# Prevents trigger bots and click macros.
+click:
+  enable: true
+
+  # Players can click 22 times per second if they jitter clicking.
+  # The average player clicks at 8 CPS, and only a minuscule amount of people achieve 16 CPS.
+  #
+  # Decrease if players are bypassing, increase if legit players are getting flagged.
+  # Lag may influence the detected CPS; set this number 1-2 higher than what you want.
+  max_cps: 30
+
+  # Whether to analyze the player's CPS.
+  check_cps: true
+
+  # Whether to analyze the player's swing patterns.
+  check_swing: true
+
+  # Whether to analyze the player's click timings.
+  check_timing: true
+
+  # Whether to add more violations for exceeding CPS.
+  dynamic_cps_vl_weight: true
+
+  # Click interval buffer size (Do not touch it!!!)
+  buffer_size: 20
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 5
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    4: 'coc %player% if -lp-<20 do matrix notify %gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_lw%(4VL) -h %gp_c_hm% Click -c %gp_r_cc%'
+    8: 'matrix notify %gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_sm%(8VL) -h %gp_c_hm% Click -c %gp_r_cc%'
+    14: 'coc %player% if -lp-<25 do %gp_r_ki% %player% %gp_o_pr%%gp_h_cl%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    20: '%gp_r_ki% %player% %gp_o_pr%%gp_h_cl%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+# Movement
+# Prevents many movement related hacks.
+move:
+  enable: true
+
+  # Should Matrix block NoSlow cheating?
+  check_noslow: true
+
+  # Amount of violations needed to cancel illegal movements. (-1 = don't cancel)
+  cancel_vl: 42
+
+  # Should Matrix apply damage to the player when the player is setback?
+  apply_damage: true
+
+  # Should Matrix allow the player to stand on the cancelled block?
+  # I recommend do not turn on it, it will slightly affect the performance
+  # and caused some bypass.
+  # https://www.youtube.com/watch?v=9lNXNW6Phk0&t=133s
+  allow_bpe_bridge: false
+
+  # Should Matrix check the speed of players with flying ability?
+  # This may cause the flight capability of some "PvP clients" to be restricted
+  check_flying_players: false
+
+  # Whether to setback players that trigger these checks.
+  force_setback_situations:
+    high_jump: true  # Illegal jump height.
+    ground_spoof_jump: true # Moving on invalid blocks.
+    bad_jumps: true # General jump related hacks.
+    air_accel: true # Invalid speed and acceleration in air.
+    air_mdf: true # General air related hacks.
+    step: true # Step (teleport) up blocks.
+
+  # Whether to teleport players to the void if required.
+  allow_setback_to_void: true
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 10
+
+    # Amount of violations that will be removed.
+    amount: 45
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    40: 'coc %player% if -lp-<25 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_lw%(40VL) -h %gp_c_hm% Move -c %gp_r_cc%'
+    64: 'coc %player% if -lp-<35 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_sm%(64VL) -h %gp_c_hm% Move -c %gp_r_cc%'
+    82: 'coc %player% if -lp-<45 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_md%(82VL) -h %gp_c_hm% Move -c %gp_r_cc%'
+    104: 'coc %player% if -lp-<30 do %gp_r_ki% %player% %gp_o_pr%%gp_h_mv%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    130: '%gp_r_ki% %player% %gp_o_pr%%gp_h_mv%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## BadPackets
+# Prevents players from sending illegal or too many packets.
+badpackets:
+  enable: true
+
+  # Timer check: Prevents players from speeding up the game's ticks.
+  timer:
+    # Whether to use the legacy timer check.
+    # This check is more stable, but is no longer updated and is easier to bypass.
+    use_legacy_timer_check: false
+
+    # The minimum timer balance threshold (ticks)
+    # Lowering this may decrease false positives, but increase bypasses.
+    min_balance: -15.0
+
+    # Whether to check for a trend and apply VLs early.
+    accelerate_timer_check: true
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 25
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    80: 'coc %player% if -lp-<28 do matrix notify %gp_c_me%%player% sent unusual packets%gp_o_an%%gp_c_sm%(80VL) -h %gp_c_hm% BadPackets -c %gp_r_cc%'
+    150: 'matrix notify %gp_c_me%%player% sent unusual packets%gp_o_an%%gp_c_md%(150VL) -h %gp_c_hm% BadPackets -c %gp_r_cc%'
+    185: 'coc %player% if -lp-<22 do %gp_r_ki% %player% %gp_o_pr%%gp_h_bp%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    240: '%gp_r_ki% %player% %gp_o_pr%%gp_h_bp%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## Delay
+# Prevents players from executing actions at an invalid interval.
+delay:
+  enable: true
+
+  # Whether to cancel actions with invalid timings.
+  cancel_action: true
+
+  # Amount of violations that will be added when detected. (-1 = disable)
+  check_healing: 1 # Invalid and fast heal speed.
+  check_using_items: 6 # Interacting with items illegally.
+  check_using_bow: 6 # Preparing and shooting bows at abnormal speeds.
+  check_auto_splash: 4 # Automatically throwing potions at certain conditions.
+  check_inventory_action: 1 # Walk with inventory.
+  check_auto_totem: 5 # Automatically placing totems in offhand before death.
+  check_fast_throw: 5 # Throwing throwables (snowballs, potions, etc) at high speeds.
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 2
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    15: 'coc %player% if -lp-<25 do matrix notify %gp_c_me%%player% increased action speed%gp_o_an%%gp_c_md%(5VL) -h %gp_c_hm% Delay -c %gp_r_cc%'
+    24: 'matrix notify %gp_c_me%%player% increased action speed%gp_o_an%%gp_c_hg%(8VL) -h %gp_c_hm% Delay -c %gp_r_cc%'
+    30: 'coc %player% if -lp-<21 do %gp_r_ki% %player% %gp_o_pr%%gp_h_de%%gp_o_su%%gp_n_fp%'
+    35: '%gp_r_ki% %player% %gp_o_pr%%gp_h_de%%gp_o_su%%gp_n_fp%'
+
+## Block
+# Prevents players from breaking and placing blocks too fast.
+block:
+  enable: true
+
+  # Amount of violations needed to cancel illegal block actions. (-1 = don't cancel)
+  cancel_vl: 6
+
+  # Modules List
+  # You can turn off some modules here
+  modules:
+    # FastBreak check: Prevents players breaking blocks too fast.
+    fastbreak:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 4
+
+    # FastPlace check: Prevents players placing blocks too fast.
+    fastplace:
+      enable: true
+
+      # This is similar to the AutoClicker/macro check.
+      # The average player clicks at 8 CPS, and only a minuscule amount of people achieve 16 CPS.
+      #
+      # Decrease if players are bypassing, increase if legit players are getting flagged.
+      # Lag may influence the detected CPS; set this number 1-2 higher than what you want.
+      # The max blocks placed per second when holding right-click is five BPS.
+      max_place_per_second: 13
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 1
+
+    # NoSwing check: Ensure players have a swing animation.
+    noswing:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 1
+
+    # Abort check: Detects players not sending the abort breaking packet.
+    abort:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 0
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 8
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    10: 'coc %player% if -lp-<33 do matrix notify %gp_c_me%%player% modified blocks quickly%gp_o_an%%gp_c_sm%(10VL) -h %gp_c_hm% Block -c %gp_r_cc%'
+    15: 'matrix notify %gp_c_me%%player% modified blocks quickly%gp_o_an%%gp_c_md%(15VL) -h %gp_c_hm% Block -c %gp_r_cc%'
+    20: 'coc %player% if -lp-<25 do %gp_r_ki% %player% %gp_o_pr%%gp_h_fp%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    32: '%gp_r_ki% %player% %gp_o_pr%%gp_h_fp%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## Scaffold check
+# Prevents players bridging or towering faster than average.
+scaffold:
+  enable: true
+
+  # Amount of violations needed to cancel illegal block actions. (-1 = don't cancel)
+  cancel_vl: 15
+
+  # Modules used in the scaffold checks
+  modules:
+    # Scaffold check: Detects players bridging too fast.
+    place:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 9
+
+      check_jump: true
+
+    # Delay check: Prevents players bridging too fast.
+    delay:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 6
+
+      # Whether to cancel illegal block placement.
+      cancel_place: true
+
+      # Minimum amount of time between straight bridge block placement (ticks)
+      # Turn this down if there are too many false positives.
+      min_delay: 6
+
+      # Minimum amount of time between diagonal bridge block placement (ticks)
+      # Turn this down if there are too many false positives.
+      min_delay_diagonal: 4
+
+    # Right CPS check: Same as AutoClicker/macro check but for right-clicks.
+    right_cps:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 5
+
+      max_cps: 29
+
+    # Tower check: Detects players towering too fast.
+    tower:
+      enable: true
+
+      # Amount of violations that will be added when detected.
+      vl_weight: 2
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 6
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    8: 'coc %player% if -lp-<33 do matrix notify %gp_c_me%%player% modified blocks quickly%gp_o_an%%gp_c_lw%(8VL) -h %gp_c_hm% Scaffold -c %gp_r_cc%'
+    10: 'matrix notify %gp_c_me%%player% modified blocks quickly%gp_o_an%%gp_c_sm%(10VL) -h %gp_c_hm% Scaffold -c %gp_r_cc%'
+    15: 'matrix notify %gp_c_me%%player% modified blocks quickly%gp_o_an%%gp_c_md%(15VL) -h %gp_c_hm% Scaffold -c %gp_r_cc%'
+    20: 'coc %player% if -lp-<30 do %gp_r_ki% %player% %gp_o_pr%%gp_h_sc%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    32: '%gp_r_ki% %player% %gp_o_pr%%gp_h_sc%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## Jesus
+# Prevents players from walking and moving too quickly on liquids.
+jesus:
+  enable: true
+  disable_worlds: []
+
+  # Amount of violations needed to cancel illegal movements. (-1 = don't cancel)
+  cancel_vl: 15
+
+  # Whether to ignore player's swimming animations.
+  # Enabling can prevent client-server de-syncs but causes issues with 1.13+ swimming.
+  ignore_swim_pose: false
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 10
+
+    # Amount of violations that will be removed.
+    amount: 10
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    14: 'coc %player% if -lp-<34 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_sm%(14VL) -h %gp_c_hm% Jesus -c %gp_r_cc%'
+    20: 'coc %player% if -lp-<48 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_md%(20VL) -h %gp_c_hm% Jesus -c %gp_r_cc%'
+    40: 'matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_hg%(40VL) -h %gp_c_hm% Jesus -c %gp_r_cc%'
+    50: 'coc %player% if -lp-<33 do %gp_r_ki% %player% %gp_o_pr%%gp_h_js%%gp_o_su%%gp_n_fp%'
+    64: '%gp_r_ki% %player% %gp_o_pr%%gp_h_js%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## Velocity
+# Prevents players from using any type of AntiKnockback hacks.
+velocity:
+  enable: true
+
+  # The amount of time to wait for players to respond to velocity packets. (ticks)
+  # Players with slow internet may take longer to respond to knockback.
+  wait_time: 33
+
+  # Ignore lag player, this feature can ignore the player who
+  # is lagging or changing resource pack.
+  ignore_lag: true
+
+  modules:
+    respond: 5 # Players that do not respond to knockback.
+    analyser: 3 # Players that do not correctly take general knockback.
+    vertical: 1 # Players that do not correctly take vertical knockback.
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 3
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    10: 'coc %player% if -lp-<25 matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_sm%(10VL) -h %gp_c_hm% Velocity -c %gp_r_cc%'
+    15: 'matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_md%(15VL) -h %gp_c_hm% Velocity -c %gp_r_cc%'
+    20: 'matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_hg%(20VL) -h %gp_c_hm% Velocity -c %gp_r_cc%'
+    24: '%gp_r_ki% %player% %gp_o_pr%%gp_h_vc%%gp_o_su%%gp_n_fp%'
+
+## Spam
+# Prevent players from spamming the chat.
+chat:
+  enable: false
+
+  # Minimum amount of time between messages. (seconds)
+  min_time: 2
+
+  # Amount of violations needed to cancel illegal block actions. (-1 = don't cancel)
+  cancel_vl: 4
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 5
+
+    # Amount of violations that will be removed.
+    amount: 2
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    4: 'matrix notify %gp_c_me%%player% is spamming the chat%gp_o_an%%gp_c_hg%(4VL) -h %gp_c_hm% Chat -c %gp_r_cc%'
+    10: '%gp_r_ki% %player% %gp_o_pr%%gp_h_sm%%gp_o_su%%gp_n_fp%'
+
+## Interact
+# Prevents players from illegally interacting with entities and blocks.
+interact:
+  enable: true
+
+  # Which version of interaction check should be used?
+  # v1 = old version
+  # v2 = new version (only support 1.8/1.12/1.19+)
+  mode: "v2"
+
+  # Whether to check for players interacting with blocks obstructed by walls.
+  check_interact_block: true
+
+  # Whether to check for players attacking entities obstructed by walls.
+  check_attack: true
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 5
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    8: 'coc %player% if -lp-<28 do matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_sm%(8VL) -h %gp_c_hm% Interact -c %gp_r_cc%'
+    12: 'matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_hg%(12VL) -h %gp_c_hm% Interact -c %gp_r_cc%'
+    16: 'coc %player% if -lp-<21 do %gp_r_ki% %player% %gp_o_pr%%gp_h_in%%gp_o_su%%gp_n_fp%'
+    21: '%gp_r_ki% %player% %gp_o_pr%%gp_h_in%%gp_o_su%%gp_n_fp%'
+
+## Phase
+# Disallows players from glitching through blocks.
+phase:
+  enable: true
+
+  # How long to freeze players if they keep moving into blocks. (ms)
+  freeze_time: 400
+
+  # Amount of violations needed to cancel illegal movements. (-1 = don't cancel)
+  cancel_vl: 5
+
+  # Whether to prevent players from using ender pearls to phase into blocks.
+  prevent_close_range_enderpearl: true
+
+  # Exclude detection for specific block types.
+  #
+  # Example:
+  # exclude_types:
+  # - OBSIDIAN
+  # - BEDROCK
+  exclude_types: []
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 10
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    7: 'coc %player% if -lp-<28 do matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_lw%(7VL) -h %gp_c_hm% Phase -c %gp_r_cc%'
+    13: 'matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_sm%(13VL) -h %gp_c_hm% Phase -c %gp_r_cc%'
+    21: 'matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_hg%(21VL) -h %gp_c_hm% Phase -c %gp_r_cc%'
+    28: 'coc %player% if -lp-<22 do %gp_r_ki% %player% %gp_o_pr%%gp_h_ph%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    38: '%gp_r_ki% %player% %gp_o_pr%%gp_h_ph%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+
+## AutoBot
+# Prevents the use of automation mods such as Baritone.
+autobot:
+  enable: false
+  
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 2
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    5: 'matrix notify %gp_c_me%%player% may be using a bot%gp_o_an%%gp_c_md%(5VL) -h %gp_c_hm% AutoBot -c %gp_r_cc%'
+    10: 'matrix notify %gp_c_me%%player% may be using a bot%gp_o_an%%gp_c_hg%(10VL) -h %gp_c_hm% AutoBot -c %gp_r_cc%'
+    15: '%gp_r_ki% %player% %gp_o_pr%%gp_h_ab%%gp_o_su%%gp_n_fp%'
+
+## Elytra
+# Prevents players using elytra related hacks.
+elytra:
+  enable: false
+
+  # Whether to teleport detected players back to their last valid position.
+  force_setback: true
+
+  # Amount of violations needed to setback illegal movements. (-1 = don't setback)
+  setback_vl: 8
+
+  # Amount of violations needed to disable a player's Elytra. (-1 = don't cancel)
+  unequip_vl: 20
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 7
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    10: 'coc %player% if -lp-<18 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_lw%(10VL) -h %gp_c_hm% Elytra -c %gp_r_cc%'
+    16: 'matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_sm%(16VL) -h %gp_c_hm% Elytra -c %gp_r_cc%'
+    24: 'matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_md%(24VL) -h %gp_c_hm% Elytra -c %gp_r_cc%'
+    30: 'coc %player% if -lp-<22 do %gp_r_ki% %player% %gp_o_pr%%gp_h_el%%gp_o_su%%gp_n_fp%'
+    48: '%gp_r_ki% %player% %gp_o_pr%%gp_h_el%%gp_o_su%%gp_n_fp%'
+
+## Vehicle
+# Prevents players from using vehicle-related hacks.
+# Note: Only works for 1.9+
+vehicle:
+  enable: false
+
+  # Prevent players from using certain creatures as vehicles.
+  # This is useful for preventing entity exploits and dupes on outdated server software.
+  # All entity types: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+  #
+  # Example:
+  # deny_entity_types_as_vehicle:
+  # - HORSE
+  # - PIG
+  deny_entity_types_as_vehicle: []
+
+  # Vehicle speed check: Prevents vehicles from moving too fast.
+  speed:
+    enable: true
+
+    # Amount of violations needed to setback illegal movements. (-1 = don't setback)
+    setback_vl: 2
+
+  # Vehicle flight check: Prevents vehicles from using fly hacks.
+  flight:
+    enable: true
+    # Amount of violations needed to setback illegal movements. (-1 = don't setback)
+    setback_vl: 4
+
+    # Amount of violations needed to kick players from vehicles. (-1 = don't kick)
+    leave_vehicle: 8
+
+  # Decay time and amount for violations.
+  # Controls the speed in which violations expire.
+  decay:
+    # Time it takes before removing violations.
+    interval: 15
+
+    # Amount of violations that will be removed.
+    amount: 5
+
+  # Violation Thresholds.
+  # Commands executed once an amount of violations is reached.
+  commands:
+    5: 'matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_md%(5VL) -h %gp_c_hm% Vehicle -c %gp_r_cc%'
+    10: 'matrix notify %gp_c_me%%player% illegally interacted with surroundings%gp_o_an%%gp_c_se%Vehicle%gp_o_an%%gp_c_hg%(10VL) -h %gp_c_hm% Vehicle -c %gp_r_cc%'
+    32: '%gp_r_ki% %player% %gp_o_pr%%gp_h_vl%%gp_o_su%%gp_n_fp%'

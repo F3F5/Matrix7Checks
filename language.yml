@@ -1,0 +1,196 @@
+#### Matrix Config - language.yml ##################################################
+#
+#     Hi, welcome to use Matrix anti-cheat, this is language.yml, which is used
+#  to define the display language of anti-cheat. Here you can define what message
+#  the anti-cheat displays.
+#
+#  - If you encounter any problems, please go to our official Discord
+#  group for help: https://discord.gg/pEvY55J
+#
+#  Anyway, thanks for using Matrix anticheat! �?
+#
+#####################################################################################
+
+# The prefix of most Matrix messages.
+# Shows up in violations, broadcasts, and commands.
+prefix: '&7[&6Matrix&7]&r '
+
+# Message sent to staff when a player is kicked.
+kick-format: '%player% has been kicked for potentially hacking!'
+
+## Kick messages
+# Whether to broadcast the kick message.
+kick-broadcast: true
+
+# Message sent to players who are spamming.
+spam-warning: '&cPlease stop spamming the chat!'
+
+## Verbose Messages
+# How Matrix verbose messages are formatted.
+#
+# %check%: Check that was triggered
+# %message%: Information on the check
+# %component%: Exact check that was triggered
+# %player%: Player that triggered the check
+# %vl%: Amount of violations the player has
+# %add_vl%: How many violations were added
+# %version%: The player's client version
+# %ping%: The player's ping
+# %lp%: The player's LagPoint
+# %tps%: The server's TPS
+verbose-format: '&7%player% failed &6%check% &8(%component%) | &7%message% &8| &7vl:%vl%&8+%add_vl% &7client:%version% ping:%ping% lp:%lp% tps:%tps%'
+
+# Message shown when a player re-logs too fast.
+relog-message: '&cKicked for logging in too fast! &7Please wait %time_left% seconds.'
+
+## Global Placeholders
+# Phrases that will be replaced with what they're set to.
+# These placeholders work in "checks.yml" (Prefixed with "gp_")
+# PlaceholderAPI placeholders are supported in every global placeholder.
+#
+# Example:
+### language.yml
+# global_placeholder:
+#   fp: "Contact an admin."
+#
+### checks.yml
+# commands:
+#   25: 'matrix kick %player% Kicked for hacks! %gp_fp%'
+global_placeholder:
+  ## Optional
+  # Small changes that will be added to various messages.
+  # Set these values to '' if you do not want to use them.
+  #
+  # o_pr: Kick message prefix
+  # o_su: Kick reason suffix
+  # o_an: Content after notification message
+  #   Ex. o_an: ' OH NO! '
+  #       Encode42 illegally moved! OH NO! (50VL)
+  o_pr: '&cKicked for '
+  o_su: '!%break%'
+  o_an: ' '
+
+  ## Kick reasons
+  # What a kicked player sees in the kick message.
+  # These are shown as the first line of the kick.
+  #
+  # h_ka: KillAura  │ h_in: Interact
+  # h_hb: HitBox    │ h_ph: Phase
+  # h_cl: Click     │ h_bp: BadPackets
+  # h_mv: Move      │ h_fp: Block
+  # h_js: Jesus     │ h_sc: Scaffold
+  # h_vc: Velocity  │ h_de: Delay
+  # h_fl: Fly       │ h_ab: AutoBot
+  # h_el: ElytraFly │ h_sm: Spamming
+  # h_vl: Vehicle
+  h_ka: 'using combat related hacks'
+  h_hb: 'using combat related hacks'
+  h_cl: 'unusual click patterns'
+  h_mv: 'using movement related hacks'
+  h_js: 'using water related hacks'
+  h_vc: 'using knockback related hacks'
+  h_fl: 'using fly related hacks'
+  h_el: 'using fly related hacks'
+  h_vl: 'unusually interacting with entity vehicles'
+  h_in: 'unusually interacting with blocks or entities'
+  h_ph: 'phasing through blocks'
+  h_bp: 'sending unusual packets to the server'
+  h_fp: 'placing or breaking blocks too fast'
+  h_sc: 'placing or breaking blocks too fast'
+  h_de: 'doing actions too fast'
+  h_ab: 'using an auto bot'
+  h_sm: 'spamming the chat'
+
+  ## Kick notes
+  # These placeholders appear after certain kick reasons.
+  #
+  # n_fp: Report false-kick message
+  # n_ui: Kicks based on bad ping
+  # n_sp: Chat spamming message
+  n_fp: '%break%&7If you were falsely kicked, please report this to the server''s admins.'
+  n_ui: '%break%&7This may be caused by an unstable internet connection.'
+  n_sp: '%break%&7Slow down a bit! Nobody wants their chat to be flooded.'
+
+  ## Customization
+  # Changes for commands, colors, etc.
+  #
+  # c_pr: Primary color
+  # c_se: Secondary color
+  # c_me: Message color
+  # c_lw: "Low" chance color
+  # c_sm: "Some" chance color
+  # c_md: "Medium" chance color
+  # c_hg: "High" chance color
+  # c_ba: Separation bar character
+  # c_hm: Hover messages on notifications
+  c_pr: '&6'
+  c_se: '&7'
+  c_me: '&r'
+  c_lw: '&a'
+  c_sm: '&e'
+  c_md: '&6'
+  c_hg: '&4'
+  c_ba: '&8|%gp_c_pr%'
+  c_hm: '%gp_c_pr%%version% Client %gp_c_ba% %ping% Ping %gp_c_ba% %tps% TPS %component% %gp_c_ba%'
+
+  ## Commands
+  # Choose which commands are utilized.
+  #
+  # r_ki: Kick/punishment command
+  # r_ki: ban-ip/punishment command
+  # r_cc: Notification click command
+  r_ki: 'matrix kick'
+  r_cc: '/matrix spec %player%'
+
+## Chat entries
+commands:
+  verbose: 'Show/Hide Matrix verbose messages'
+  notify: 'Send message to all online staff'
+  toggle-notify: 'Toggle notify message output'
+  npc: 'Spawn an KillAura detection NPC behind player'
+  kick: 'Kick a player'
+  msg: 'Send warning messages to a player'
+  gui: 'Open Control Panel'
+  violations: 'Open Violations GUI'
+  ping: 'Get the player latency value'
+  cps: 'Monitor player CPS data for seconds'
+  reload: 'Reload Config'
+
+## GUI entries
+# Used in /matrix gui.
+gui:
+  main:
+    toggle-checks:
+      name: '&aToggle Checks'
+      description: '&7Click to open checks GUI'
+    show-violations:
+      name: '&aShow Violations'
+      description: '&7Click to open Violations GUI'
+    toggle-verbose:
+      name: '&aToggle Verbose'
+      description: '&7Click to enable/disable verbose message'
+    reload-matrix:
+      name: '&cReload Matrix'
+      description: '&7Click to reload plugin'
+    server-status:
+      name: '&bServer Status'
+    support-links:
+      name: '&bSupport Links'
+    premium-user:
+      name: '&bPremium User'
+    close-gui:
+      name: '&cClose GUI'
+
+misc:
+  update:
+    start-checking: 'Start checking update....'
+    updater: '§a> Matrix Updater:'
+    has-update: '§cMatrix has an update: §f%latest%  §ccurrent version: §2%current%'
+    latest: '§aYou are using the latest version of Matrix-AntiCheat <3'
+    download-link: '§cDownload link'
+  premium:
+    pass: 'Premium version verification has passed!'
+    expire-time: 'Expire Time: %time%'
+  reload:
+    start-reload: 'Reloading Matrix...'
+    reloaded: 'Matrix reloaded.'

@@ -1,0 +1,102 @@
+# Download it here: https://black-minecraft.com/resources/1856/
+#### Matrix Config - config.yml ####################################################
+#
+#     Hi, welcome to use Matrix anti-cheat, this is config.yml, used to define the
+#  global settings of Matrix.
+#
+#  - If you encounter any problems, please go to our official Discord
+#  group for help: https://discord.gg/pEvY55J
+#
+#  Useful Links:
+#    Website: https://matrix.rip
+#    Discord: https://discord.gg/pEvY55J
+#    Wiki: https://wiki.matrix.rip
+#    Issue Tracker: https://github.com/jiangdashao/Matrix-Issues/issues
+#
+#  Anyway, thanks for using Matrix anti-cheat!
+#
+#####################################################################################
+
+# Whether to check for plugin updates.
+check_update: false
+
+# Premium user credentials.
+# These are obtained after messaging Matrix's developer with proof of purchase.
+# Don't share this sensitive information!
+premium_user:
+  # Login user name
+  user: 'crack_user'
+
+  # Login password
+  password: 'crack_password'
+
+# Whether to downloads checks.yml from an external web server.
+# To enable this feature, just change "cloud_config.enable: false" to "true".
+# This will ignore your local checks.yml and update on every server restart!
+cloud_config:
+  enable: false
+
+  # The links to download checks from.
+  # You can have multiple links in case one goes down. (Only the first valid link is used)
+  links:
+    - 'your configuration file link'
+
+# Time between permission cache refresh. (seconds)
+# Setting this too high can cause issues with the bypass permission.
+permission_refresh_interval: 120
+
+# Whether to enable GeyserMC support. (Bedrock support)
+# Enable this ONLY if you have GeyserMC for security reasons.
+# For more information: https://github.com/re-ovo/Matrix-Issues/wiki/GeyserMC-Support
+bungee_geysermc_support: false
+
+# Whether to summon a lightning strike on players who are kicked.
+kick_strike_lightning: false
+
+# Automatically disables some checks when the server TPS drops.
+# This prevents some false positives for checks that require little lag.
+tps_protection:
+  enable: true
+
+  # Disable checks below this number.
+  min_tps: 17.0
+
+  # If the server doesn't respond within this amount of time, cancel the check. (ms)
+  lag_threshold: 750
+
+# Logs all violations to the Matrix/logs directory.
+# Recommended enabling if you are debugging/monitoring checks.
+log_file: true
+
+# Delete old Matrix log files. (days)
+delete_time: 7
+
+# Whether to disable the "matrix.bypass" permission.
+# Enable if you want every player to be checked.
+disable_bypass_permission: false
+
+# Stops players from re-logging right after being kicked. (seconds)
+relog_time: 0
+
+# Disable specific components used in checks.
+#
+# Example:
+# disabled_components:
+# - 'vel.ana'
+disabled_components: []
+
+# Sets a custom vl_weight for specific components.
+#
+# Example:
+# custom_vl_weight:
+# - 'vel.ana:4'
+custom_vl_weight: []
+
+# Whether to register inactive commands from other anticheats.
+# Prevents finding the anticheat your server uses via command completions.
+# It's recommended to use the CommandWhitelist plugin instead.
+fake_anticheat:
+  aac: false
+  spartan: false
+
+# 1565008789202281673205007
