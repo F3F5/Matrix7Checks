@@ -270,7 +270,8 @@ click:
   commands:
     4: 'coc %player% if -lp-<20 do matrix notify %gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_lw%(4VL) -h %gp_c_hm% Click -c %gp_r_cc%'
     8: 'matrix notify %gp_c_me%%player% may be using combat hacks%gp_o_an%%gp_c_sm%(8VL) -h %gp_c_hm% Click -c %gp_r_cc%'
-    14: 'coc %player% if -lp-<25 do %gp_r_ki% %player% %gp_o_pr%%gp_h_cl%%gp_o_su%%gp_n_ui%%gp_n_fp%'
+    10: 'matrix npc %player% 125'
+    18: 'coc %player% if -lp-<25 do %gp_r_ki% %player% %gp_o_pr%%gp_h_cl%%gp_o_su%%gp_n_ui%%gp_n_fp%'
     20: '%gp_r_ki% %player% %gp_o_pr%%gp_h_cl%%gp_o_su%%gp_n_ui%%gp_n_fp%'
 
 # Movement
@@ -323,6 +324,7 @@ move:
   commands:
     40: 'coc %player% if -lp-<25 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_lw%(40VL) -h %gp_c_hm% Move -c %gp_r_cc%'
     64: 'coc %player% if -lp-<35 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_sm%(64VL) -h %gp_c_hm% Move -c %gp_r_cc%'
+    70: 'matrix npc %player% 125'
     82: 'coc %player% if -lp-<45 do matrix notify %gp_c_me%%player% illegally moved%gp_o_an%%gp_c_md%(82VL) -h %gp_c_hm% Move -c %gp_r_cc%'
     104: 'coc %player% if -lp-<30 do %gp_r_ki% %player% %gp_o_pr%%gp_h_mv%%gp_o_su%%gp_n_ui%%gp_n_fp%'
     130: '%gp_r_ki% %player% %gp_o_pr%%gp_h_mv%%gp_o_su%%gp_n_ui%%gp_n_fp%'
@@ -391,6 +393,7 @@ delay:
   # Violation Thresholds.
   # Commands executed once an amount of violations is reached.
   commands:
+    8: 'matrix npc %player% 125'
     15: 'coc %player% if -lp-<25 do matrix notify %gp_c_me%%player% increased action speed%gp_o_an%%gp_c_md%(5VL) -h %gp_c_hm% Delay -c %gp_r_cc%'
     24: 'matrix notify %gp_c_me%%player% increased action speed%gp_o_an%%gp_c_hg%(8VL) -h %gp_c_hm% Delay -c %gp_r_cc%'
     30: 'coc %player% if -lp-<21 do %gp_r_ki% %player% %gp_o_pr%%gp_h_de%%gp_o_su%%gp_n_fp%'
