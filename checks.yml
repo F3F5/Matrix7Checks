@@ -314,10 +314,10 @@ move:
   # Controls the speed in which violations expire.
   decay:
     # Time it takes before removing violations.
-    interval: 10
+    interval: 15
 
     # Amount of violations that will be removed.
-    amount: 50
+    amount: 45
 
   # Violation Thresholds.
   # Commands executed once an amount of violations is reached.
