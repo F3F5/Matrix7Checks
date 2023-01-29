@@ -316,7 +316,7 @@ move:
     interval: 10
 
     # Amount of violations that will be removed.
-    amount: 45
+    amount: 50
 
   # Violation Thresholds.
   # Commands executed once an amount of violations is reached.
@@ -542,7 +542,7 @@ jesus:
 
   # Whether to ignore player's swimming animations.
   # Enabling can prevent client-server de-syncs but causes issues with 1.13+ swimming.
-  ignore_swim_pose: false
+  ignore_swim_pose: true
 
   # Decay time and amount for violations.
   # Controls the speed in which violations expire.
