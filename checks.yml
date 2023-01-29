@@ -150,10 +150,10 @@ killaura:
   # Controls the speed in which violations expire.
   decay:
     # Time it takes before removing violations.
-    interval: 15
+    interval: 10
 
     # Amount of violations that will be removed.
-    amount: 10
+    amount: 5
 
   # Violation Thresholds.
   # Commands executed once an amount of violations is reached.
