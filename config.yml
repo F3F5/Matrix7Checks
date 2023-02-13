@@ -20,15 +20,9 @@
 # Whether to check for plugin updates.
 check_update: false
 
-# Premium user credentials.
-# These are obtained after messaging Matrix's developer with proof of purchase.
-# Don't share this sensitive information!
-premium_user:
-  # Login user name
-  user: 'crack_user'
-
-  # Login password
-  password: 'crack_password'
+# Place access token here, you can get it from https://cp.rerere.me (Client - Token)
+# Please do NOT share your access token with anyone!
+access_token: 'none'
 
 # Whether to downloads checks.yml from an external web server.
 # To enable this feature, just change "cloud_config.enable: false" to "true".
