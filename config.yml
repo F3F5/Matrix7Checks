@@ -1,4 +1,3 @@
-# Download it here: https://black-minecraft.com/resources/1856/
 #### Matrix Config - config.yml ####################################################
 #
 #     Hi, welcome to use Matrix anti-cheat, this is config.yml, used to define the
@@ -93,5 +92,3 @@ custom_vl_weight: []
 fake_anticheat:
   aac: false
   spartan: false
-
-# 1565008789202281673205007
