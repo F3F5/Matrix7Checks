@@ -78,7 +78,7 @@ relog_time: 0
 # disabled_components:
 # - 'vel.ana'
 disabled_components:
- - 'move.gf' # 1.8+ disable '# -' if you disabled and have many falses, enable again!
+ - 'check-example'
 
 # Sets a custom vl_weight for specific components.
 #
